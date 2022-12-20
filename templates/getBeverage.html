@@ -5,12 +5,12 @@
     <title>Title</title>
 </head>
 <body>
-<table style="width: 150%; margin: 0;padding: 0; border: 1px solid black;">
+<table style="width: 100%; margin: 0;padding: 0; border: 1px solid black;">
 
 {% for beverageTuple in beverages: %}
-<tr>
+<tr style="border: 1px solid black;">
 
-    <td>
+    <td style="border: 1px solid black;">
         {{beverageTuple.0}}
         <a href="https://activecell.de/">
             <img alt="Qries" src="https://www.qries.com/images/banner_logo.png" width=150" height="150">
@@ -18,8 +18,11 @@
 
     </td>
 
-    <td>
+    <td style="border: 1px solid black;">
         {{beverageTuple.1}}
+        <a href="/api/orderNew?{{beverageTuple.1.0}}&{{userID}}&10"> <!--FIX-->
+            <img alt="Qries" src="https://www.qries.com/images/banner_logo.png" width=150" height="150">
+        </a>
     </td>
 
 
