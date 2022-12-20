@@ -8,7 +8,7 @@ from mysql.connector import errorcode
 import configparser
 from flask import Flask, jsonify, request, redirect, make_response, render_template
 from flask_login import LoginManager, login_required, UserMixin, login_user
-
+import math
 from wtforms import StringField, PasswordField, SubmitField
 
 
@@ -103,13 +103,20 @@ def settings():
 
 @app.route('/api/getBeverages')
 def get_beverages():
-    query = 'SELECT id,Name,Whatever from beverages'
+    query = 'SELECT id,Name,Img_URL from beverages'
     cursor.execute(query)
     results = cursor.fetchall()
     ret = []
     for result in results:
         ret.append(result)
-    return jsonify(ret)
+
+    newret = []
+    if len(ret) % 2 == 1:
+        ret.append(())
+    for i in range(0, math.ceil(len(ret)/2)):
+        newret.append((ret[i], ret[i+1]))
+
+    return render_template("getBeverage.html", beverages = newret)
 
 
 @app.route('/api/orderNew')
@@ -122,7 +129,7 @@ def set_order():
     _order = Order(drinkID, barID, menge)
     orderQueue.append(_order)
     print(_order)
-
+    flask.flash('Send')
     return render_template('confirm.html', target='/api/getBeverages')
 
 
@@ -141,9 +148,17 @@ def get_order():
 @app.route('/')
 @app.route('/index')
 def index():
-    user_info = {
-        'name': 'User'
-    }
+    user_info = {}
+    if flask_login.current_user.is_anonymous:
+        user_info = {
+            'name': 'user'
+        }
+    else:
+        user_info = {
+            'name': flask_login.current_user.uName
+        }
+
+
     return render_template('index.html', user=user_info)
 
 
@@ -183,13 +198,21 @@ def logout():
 
 
 def validate_user(username, password):
-    hash =  hashlib.md5(password)
-    query = f"SELECT id from user where name = '{username}'"
-    cursor.execute(query)
+    if username.type is None or password.type is None:
+        return False
+    if username.data == "" or password.data == "":
+            return False
+    try:
+        hash =  hashlib.md5(password.data.encode())
+        query = f"SELECT id from user where name = '{username.data}' and pass = '{hash.hexdigest()}'"
+        cursor.execute(query)
+        results = cursor.fetchall()
+        print(hash.hexdigest())
+        return len(results) == 1
 
-
-    return username.data == 'admin' and password.data == 'admin'
-
+    except Exception as e:
+        print (e)
+        return False
 
 class LoginForm(FlaskForm):
     username = StringField('Username')
