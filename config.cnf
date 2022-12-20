@@ -3,3 +3,11 @@ Port = 50022
 user = admin
 password = 1234
 database = test
+[GRUPPEN]
+1 = ADMIN
+2 = Bar
+3 = Security
+4 = LAD
+
+[RECHTE]
+
