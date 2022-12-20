@@ -113,16 +113,11 @@ def get_beverages():
     for result in results:
         ret.append(result)
 
-    newret = []
-    if len(ret) % 2 == 1:
-        ret.append(())
-    for i in range(0, math.ceil(len(ret)/2)):
-        newret.append((ret[i], ret[i+1]))
     id = -1
     if not flask_login.current_user.is_anonymous:
         id = flask_login.current_user.uid
 
-    return render_template("getBeverage.html", beverages = newret, userID = id)
+    return render_template("getBeverage.html", beverages = ret, userID = id)
 
 
 @app.route('/api/orderNew')

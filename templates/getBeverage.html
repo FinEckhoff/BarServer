@@ -32,23 +32,35 @@
   </ul>
 </nav>
 <table>
-{% for beverageTuple in beverages: %}
+
+
+
+  {% for i in range(0, beverages|length, 3) %}
 
 <div class="container">
   <h1>My Collection</h1>
   <div class="item-grid">
     <div class="item">
-      <h2>{{beverageTuple.0}}</h2>
-      <p>Description of item 1</p>
+      <a href="/api/">
+      <img alt="Qries" src="{{beverages[i].2}}" width=300" height="300"></a>
+      <p>{{beverages[i].1}}</p>
     </div>
+    {% if beverages[i+1] %}
+
     <div class="item">
-      <h2>{{beverageTuple.1}}</h2>
-      <p>Description of item 2</p>
+      <a href="/api/">
+      <img alt="Qries" src="{{beverages[i+1].2}}" width=300" height="300"></a>
+      <p>{{beverages[i+1].1}}</p>
     </div>
+    {% endif %}
+    {% if beverages[i+2] %}
+
     <div class="item">
-      <h2>{{beverageTuple.2}}</h2>
-      <p>Description of item 3</p>
+      <a href="/api/">
+      <img alt="Qries" src="{{beverages[i+2].2}}" width=300" height="300"></a>
+      <p>{{beverages[i+2].1}}</p>
     </div>
+    {% endif %}
   </div>
 </div>
 
