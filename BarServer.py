@@ -28,7 +28,7 @@ def get_beverages():
 
 
 @app.route('/api/orderNew')
-def order():
+def set_order():
     drinkID = int(request.args.get('drinkID'))
     barID = int(request.args.get('barID'))
     menge = int(request.args.get('menge'))
@@ -38,6 +38,21 @@ def order():
     print(_order)
 
     return render_template('confirm.html', target='/api/getBeverages')
+
+@app.route('/api/getOrderQueue')
+def get_order():
+
+    barID = int(request.args.get('barID', "-1"))
+    ret = []
+    if barID == -1:
+        ret = map(lambda order: str(order), orderQueue)
+    else:
+        filtered = filter(lambda order: order.barID == barID, orderQueue)
+        ret = map(lambda order: str(order), filtered)
+    return ret
+
+
+
 
 
 class Order:
@@ -53,7 +68,9 @@ class Order:
         return str((vars(self)))
 
 
+
+
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=True, port=6969)
     cursor.close()
     cnx.close()
