@@ -6,7 +6,7 @@ import mysql.connector
 from flask_wtf import FlaskForm
 from mysql.connector import errorcode
 import configparser
-from flask import Flask, jsonify, request, redirect, make_response, render_template
+from flask import Flask, jsonify, request, redirect, make_response, render_template, send_from_directory
 from flask_login import LoginManager, login_required, UserMixin, login_user
 import math
 from wtforms import StringField, PasswordField, SubmitField
@@ -82,8 +82,8 @@ config = configparser.ConfigParser()
 config.read("config.cnf")
 MySQLConfig = config["MYSQL"]
 
-cnx = mysql.connector.connect(user=MySQLConfig["user"], password=MySQLConfig["password"], host='localhost',
-                              database=MySQLConfig["database"])
+cnx = mysql.connector.connect(user=MySQLConfig["user"], password=MySQLConfig["password"], host='activecell.de',
+                              database=MySQLConfig["database"], port=41069)
 
 cursor = cnx.cursor()
 orderQueue = []
@@ -100,6 +100,9 @@ def settings():
     print(flask_login.current_user.uid)
     return "Geile sache"
 
+@app.route('/api/test.css')
+def standart_stylesheet():
+    return send_from_directory("templates", "test.css")
 
 @app.route('/api/getBeverages')
 def get_beverages():
