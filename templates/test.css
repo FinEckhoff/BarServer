@@ -3,7 +3,9 @@
   margin: 0 auto;
   text-align: center;
 }
-
+.h1 {
+	text-align: center;
+}
 .item-grid {
   display: flex;
   flex-wrap: wrap;
@@ -16,6 +18,7 @@
   background-color: #f2f2f2;
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+	border-style: dashed;
 }
 
 .item img {
@@ -31,9 +34,10 @@
 }
 
 .item p {
-  font-size: 0.9em;
+  font-size: 1.3em;
   color: #666;
   padding: 0 1em;
+	alignment: bottom;
 }
 
 
