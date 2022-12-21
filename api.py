@@ -1,8 +1,11 @@
+import hashlib
 
 import flask_login
 
 from flask import Flask, jsonify, request, redirect, make_response, render_template, send_from_directory
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
 
 from classes import *
 
@@ -29,11 +32,13 @@ cnx = mysql.connector.connect(user=MySQLConfig["user"], password=MySQLConfig["pa
 cursor = cnx.cursor()
 orderQueue = []
 
-
+@app.route('/test.css')
 @app.route('/api/test.css')
 def standart_stylesheet():
     return send_from_directory("templates", "test.css")
 
+
+@app.route('/cart.js')
 @app.route('/api/cart.js')
 def cart_script():
     return send_from_directory("templates", "cart.js")
@@ -42,7 +47,7 @@ def cart_script():
 @login_required
 def addToCart(id):
     flask_login.current_user.addItemToCart(id)
-    return redirect("/api/getBeverages")
+    return redirect("/getBeverages")
 
 @app.route('/api/submitOrder')
 @login_required
@@ -61,7 +66,7 @@ def submitOrder():
         print(_order)
     #flask.flash('Send')
     flask_login.current_user.cart = {}
-    return render_template('confirm.html', target='/api/getBeverages')
+    return render_template('confirm.html', target='/getBeverages')
 
 
 
@@ -72,23 +77,6 @@ def removeFromToCart(id):
 
     return redirect("/api/getBeverages")
 
-
-@app.route('/api/getBeverages')
-@login_required
-def get_beverages():
-    query = 'SELECT id,Name,Img_URL from beverages'
-    cursor.execute(query)
-    results = cursor.fetchall()
-    ret = []
-    for result in results:
-        ret.append(result)
-
-    id = -1
-
-    if not flask_login.current_user.is_anonymous:
-        id = flask_login.current_user.uid
-
-    return render_template("getBeverage.html", beverages=ret, userID=id, cart = flask_login.current_user.cart)
 #cartKeys = flask_login.current_user.cart.keys(), cartValues= flask_login.current_user.cart.values()
 
 @app.route('/api/orderNew') #deprecated
@@ -123,3 +111,34 @@ def get_order():
         print(list(filtered))
         print(json.dumps(ret))
     return jsonify(ret)
+
+
+def validate_user(username, password):
+    if username.type is None or password.type is None:
+        return False
+    if username.data == "" or password.data == "":
+        return False
+    try:
+        hash = hashlib.md5(password.data.encode())
+        query = f"SELECT id from user where name = '{username.data}' and pass = '{hash.hexdigest()}'"
+        cursor.execute(query)
+        results = cursor.fetchall()
+        print(hash.hexdigest())
+        return len(results) == 1
+
+    except Exception as e:
+        print(e)
+        return False
+
+
+class LoginForm(FlaskForm):
+    username = StringField('Username')
+    password = PasswordField('Password')
+    submit = SubmitField('Submit')
+
+    def validate_on_submit(self):
+        print("here")
+        if validate_user(self.username, self.password):
+            return True
+        return False
+
