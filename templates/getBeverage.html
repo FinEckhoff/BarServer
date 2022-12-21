@@ -4,7 +4,8 @@
     <link rel="stylesheet" href="./test.css">
     <meta charset="UTF-8">
     <title>Title</title>
-
+    <script src="cart.js"></script>
+    <!--<meta http-equiv="refresh" content="10"> HORRIBLE WAY-->
 </head>
 {% extends "header.html" %}
  <!--{{block.super()}}-->
@@ -12,10 +13,12 @@
 <body>
 {% block content %}
 
-<table>
 
 
+<div class="float-container">
 
+
+ <div class="beverageList">
   <div class="container">
 
     <h1>Getränke</h1>
@@ -23,23 +26,23 @@
  {% for i in range(0, beverages|length, 3) %}
   <div class="item-grid">
     <div class="item">
-      <a href="/api/">
-      <img alt="Qries" src="{{beverages[i].2}}" width=300" height="300"></a>
+      <a href="/api/addToCart/{{beverages[i].0}}">
+      <img alt="Qries" src="{{beverages[i].2}}" ></a>
       <p>{{beverages[i].1}}</p>
     </div>
     {% if beverages[i+1] %}
 
     <div class="item">
-      <a href="/api/">
-      <img alt="Qries" src="{{beverages[i+1].2}}" width=300" height="300"></a>
+      <a href="/api/addToCart/{{beverages[i + 1].0}}">
+      <img alt="Qries" src="{{beverages[i+1].2}}"></a>
       <p>{{beverages[i+1].1}}</p>
     </div>
     {% endif %}
     {% if beverages[i+2] %}
 
     <div class="item">
-      <a href="/api/">
-      <img alt="Qries" src="{{beverages[i+2].2}}" width=300" height="300"></a>
+      <a href="/api/addToCart/{{beverages[i + 2].0}}">
+      <img alt="Qries" src="{{beverages[i+2].2}}"></a>
       <p>{{beverages[i+2].1}}</p>
     </div>
     {% endif %}
@@ -48,11 +51,39 @@
 {% endfor %}
 
 </div>
+</div>
+ <div class="shoppingCart">
+     {% for key in cart%}
+     {% set id = key | int %}
 
-</table>
+     <div class="item">
+         <a href="/api/removeFromCart/{{key}}">
+
+      <img alt="Qries" src="{{beverages[id - 1].2}}" ></a>
+         <h2>
+             {{cart[key]}}
+         </h2>
+         </div>
 
 
 
+
+
+{% endfor %}
+     {% set orderlist = cart | int %}
+
+     <a href="/api/submitOrder">
+
+      <img class="submitBtnImg" alt="Qries" src="https://previews.123rf.com/images/bahau/bahau2002/bahau200200023/140003807-boy-running-marathon-runner-or-a-boy-running-on-school-sport-day-cartoon-stock-vector-illustration-i.jpg" ></a>
+<!--
+<button onclick="sendOrder({{orderlist}})" type="button" class="btn-send">Send</button>
+
+ <img alt="Qries" src="https://e7.pngegg.com/pngimages/363/657/png-clipart-computer-icons-chromatography-50x50-chromatogram-miscellaneous-text-thumbnail.png"
+ onclick="sendOrder({{orderlist}})">-->
+</div>
+
+
+</div>
 {% endblock %}
 </body>
 
