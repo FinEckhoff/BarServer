@@ -8,6 +8,12 @@
 </head>
 <body>
 
+
+
+
+
+
+
 <nav id='menu'>
   <input type='checkbox' id='responsive-menu' onclick='updatemenu()'><label></label>
   <ul>
@@ -31,8 +37,14 @@
     <li><a href='http://'>Contact Us</a></li>
   </ul>
 </nav>
+<div class="float-container">
 
-
-{% block content %}
+{% block LeftSubDiv %}
 {% endblock %}
+
+  {% block RightSubDiv %}
+{% endblock %}
+</div>
+
+
 </body>

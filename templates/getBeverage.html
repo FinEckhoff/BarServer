@@ -11,12 +11,8 @@
  <!--{{block.super()}}-->
 
 <body>
-{% block content %}
 
-
-
-<div class="float-container">
-
+{% block LeftSubDiv %}
 
  <div class="beverageList">
   <div class="container">
@@ -52,6 +48,11 @@
 
 </div>
 </div>
+{% endblock %}
+
+
+
+  {% block RightSubDiv %}
  <div class="shoppingCart">
      {% for key in cart%}
      {% set id = key | int %}
@@ -70,12 +71,14 @@
 
 
 {% endfor %}
-     {% set orderlist = cart | int %}
 
+
+{% if cart|length %}
      <a href="/api/submitOrder">
+         <img class="submitBtnImg" alt="Qries" src="https://previews.123rf.com/images/bahau/bahau2002/bahau200200023/140003807-boy-running-marathon-runner-or-a-boy-running-on-school-sport-day-cartoon-stock-vector-illustration-i.jpg" ></a>
+{% endif %}
+   <!--
 
-      <img class="submitBtnImg" alt="Qries" src="https://previews.123rf.com/images/bahau/bahau2002/bahau200200023/140003807-boy-running-marathon-runner-or-a-boy-running-on-school-sport-day-cartoon-stock-vector-illustration-i.jpg" ></a>
-<!--
 <button onclick="sendOrder({{orderlist}})" type="button" class="btn-send">Send</button>
 
  <img alt="Qries" src="https://e7.pngegg.com/pngimages/363/657/png-clipart-computer-icons-chromatography-50x50-chromatogram-miscellaneous-text-thumbnail.png"
@@ -83,7 +86,7 @@
 </div>
 
 
-</div>
+
 {% endblock %}
 </body>
 
