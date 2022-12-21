@@ -199,13 +199,29 @@ def set_order():
 
 @app.route('/api/getOrderQueue')
 def get_order():
+    global orderQueue
     barID = int(request.args.get('barID', "-1"))
     ret = []
     if barID == -1:
         ret = list(map(lambda order: str(order), orderQueue))
     else:
-        filtered = filter(lambda order: order.barID == barID, orderQueue)
+        filtered = []
+        filtered = filter(lambda order: int(order.barID) == int(barID), orderQueue)
+        """
+        for order in orderQueue:
+            if order.barID == int(barID):
+                print("wtf")
+                filtered.append(order)
+            else:FRUST
+                print(f" order : {order.barID} - bar : {barID}" )
+                print(f" order : {type(order.barID)} - bar : {type(barID)}" )
+                """
+
         ret = list(map(lambda order: str(order), filtered))
+        print(ret)
+
+        print(list(filtered))
+        print(json.dumps(ret))
     return jsonify(ret)
 
 
