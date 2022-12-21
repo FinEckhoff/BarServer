@@ -91,3 +91,7 @@ class Order:
     def __str__(self):
         return str((vars(self)))
 
+    def __eq__(self, other):
+        return isinstance(other, Order) and self.barID == other.barID and self.drinkID == other.drinkID
+    def __ne__(self, other):
+        return not self.__eq__(other)

@@ -15,19 +15,15 @@ from api import app, login_manager, orderQueue, cnx, cursor, LoginForm
 from classes import User, Order
 
 
-
-
-
-
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
 
+
 @login_manager.unauthorized_handler
 def unauthorized_callback():
     return redirect('/login?next=' + request.path)
+
 
 @app.route("/settings")
 @login_required
@@ -52,8 +48,6 @@ def index():
     return render_template('index.html', user=user_info)
 
 
-
-
 @app.route('/getBeverages')
 @login_required
 def get_beverages():
@@ -69,7 +63,52 @@ def get_beverages():
     if not flask_login.current_user.is_anonymous:
         id = flask_login.current_user.uid
 
-    return render_template("getBeverage.html", beverages=ret, userID=id, cart = flask_login.current_user.cart)
+    return render_template("getBeverage.html", beverages=ret, userID=id, cart=flask_login.current_user.cart)
+
+
+def condenseOrders(sortedOrders: list):  # HOLY SHIT das MUSS doch besser gehen!!
+    condensed = []
+    objectsAlreadyProcessed = []
+    for index, order in enumerate(sortedOrders):
+        if order in objectsAlreadyProcessed :
+            continue
+        fixeddrinkID = order.drinkID
+        fixedbarID = order.barID
+        currentMenge = order.menge
+        
+
+        for otherIndex, other in enumerate(sortedOrders):
+            if order is other:
+                continue
+            if order == other:
+                currentMenge += other.menge
+        order.menge = currentMenge
+        condensed.append(order)
+        objectsAlreadyProcessed.append(order)
+    return condensed
+                
+
+
+
+
+    return None
+"""
+    def findIndexOforder(order):
+        index = next((i for i, item in enumerate(bestellungenProBar) if item.barID == order.barID), -1)
+        return index
+
+    for order in sortedOrders:
+        index = findIndexOforder(order)
+        if (index >= 0) :
+            if bestellungenProBar[index].drinkID == order.drinkID:
+                bestellungenProBar[index].menge += order.menge
+            else:
+                bestellungenProBar.append(order)
+        else:
+            bestellungenProBar.append(order)
+"""
+
+
 
 @app.route('/getOrders')
 def get_orders():
@@ -77,17 +116,18 @@ def get_orders():
     ret = []
     if barID == -1:
         ret = orderQueue
-        #ret = list(map(lambda order: (order, orderQueue))
+        # ret = list(map(lambda order: (order, orderQueue))
     else:
         filtered = []
         filtered = filter(lambda order: int(order.barID) == int(barID), orderQueue)
-        #ret = list(map(lambda order: order, filtered))
+        # ret = list(map(lambda order: order, filtered))
         ret = list(filtered)
     userID = -1
     if not flask_login.current_user.is_anonymous:
         userID = flask_login.current_user.uid
     sortedOrders = sorted(ret, key=lambda x: x.barID, reverse=True)
-    return render_template("getOrders.html", orders = sortedOrders, userID = userID)
+    sortedOrders = condenseOrders(sortedOrders)
+    return render_template("getOrders.html", orders=sortedOrders, userID=userID)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -129,7 +169,6 @@ def logout():
     flask_login.current_user.cart = {}
     logout_user()
     return redirect("index")
-
 
 
 if __name__ == '__main__':

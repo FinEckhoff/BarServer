@@ -75,7 +75,7 @@ def submitOrder():
 def removeFromToCart(id):
     flask_login.current_user.removeItemFromCart(id)
 
-    return redirect("/api/getBeverages")
+    return redirect("/getBeverages")
 
 #cartKeys = flask_login.current_user.cart.keys(), cartValues= flask_login.current_user.cart.values()
 

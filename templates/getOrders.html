@@ -10,15 +10,37 @@
 
 {% block LeftSubDiv %}
 
-orders
-{% for i in range(0, orders|length) %}
 {{orders[i]}}
-----------
 
-        {%endfor%}
+
+ <div class="beverageList">
+  <div class="container">
+
+    <h1>Bestellungen</h1>
+
+ {% for i in range(0, orders|length) %}
+      {{orders[i]}}
+  <div class="item-grid">
+    <div class="item">
+
+      <img alt="Qries" src="{{orders[i].2}}" >
+      <p>{{orders[i].1}}</p>
+    </div>
+
+
+
+  </div>
+
+{% endfor %}
+
+</div>
+</div>
 {% endblock %}
+
+
+
 {% block RightSubDiv %}
-{{userID}}
+
 {% endblock %}
 </body>
 </html>
