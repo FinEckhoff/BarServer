@@ -240,7 +240,7 @@ def login():
         user.setup()
         user.uName = form.username.data
 
-        User.userList.append(user)  # What is a memory leak????
+        User.userList.append(user)  # What is a memory leak???? #TODO fix
         login_user(user)
 
         user.uid = user.get_id()
@@ -251,6 +251,7 @@ def login():
         next = flask.request.args.get('next')
         # is_safe_url should check if the url is safe for redirects.
         # See http://flask.pocoo.org/snippets/62/ for an example.
+
         if not str(next):  # TODO better
             print(next)
             return flask.abort(400)
