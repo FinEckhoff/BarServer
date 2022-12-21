@@ -1,10 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="/test.css">
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 {% extends "header.html" %}
+
+{% block LeftSubDiv %}
+
+orders
+{% for i in range(0, orders|length) %}
+{{orders[i]}}
+----------
+
+        {%endfor%}
+{% endblock %}
+{% block RightSubDiv %}
+{{userID}}
+{% endblock %}
 </body>
 </html>

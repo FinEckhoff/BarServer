@@ -85,9 +85,9 @@ def set_order():
     pass
 
 
-@app.route('/api/getOrderQueue')
+@app.route('/api/getOrderQueue') #DEBUG / APP?
 def get_order():
-    global orderQueue
+
     barID = int(request.args.get('barID', "-1"))
     ret = []
     if barID == -1:

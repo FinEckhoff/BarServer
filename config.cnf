@@ -1,8 +1,10 @@
 [MYSQL]
-Port = 50022
+#port = 41069
+port = 3306
 user = admin
 password = 1234
 database = test
+host = localhost
 [GRUPPEN]
 1 = ADMIN
 2 = Bar

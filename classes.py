@@ -8,8 +8,8 @@ from flask_login import UserMixin
 config = configparser.ConfigParser()
 config.read("config.cnf")
 MySQLConfig = config["MYSQL"]
-cnx = mysql.connector.connect(user=MySQLConfig["user"], password=MySQLConfig["password"], host='activecell.de',
-                              database=MySQLConfig["database"], port=41069)
+cnx = mysql.connector.connect(user=MySQLConfig["user"], password=MySQLConfig["password"], host=MySQLConfig["host"],
+                              database=MySQLConfig["database"], port=MySQLConfig["port"])
 orderQueue = []
 
 cursor = cnx.cursor()

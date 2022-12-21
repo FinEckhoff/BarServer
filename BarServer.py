@@ -71,6 +71,24 @@ def get_beverages():
 
     return render_template("getBeverage.html", beverages=ret, userID=id, cart = flask_login.current_user.cart)
 
+@app.route('/getOrders')
+def get_orders():
+    barID = int(request.args.get('barID', "-1"))
+    ret = []
+    if barID == -1:
+        ret = orderQueue
+        #ret = list(map(lambda order: (order, orderQueue))
+    else:
+        filtered = []
+        filtered = filter(lambda order: int(order.barID) == int(barID), orderQueue)
+        #ret = list(map(lambda order: order, filtered))
+        ret = list(filtered)
+    userID = -1
+    if not flask_login.current_user.is_anonymous:
+        userID = flask_login.current_user.uid
+    sortedOrders = sorted(ret, key=lambda x: x.barID, reverse=True)
+    return render_template("getOrders.html", orders = sortedOrders, userID = userID)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
