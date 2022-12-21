@@ -26,9 +26,11 @@ def get_user_id(uname):
 
 
 class User(UserMixin):
+
     userList = []
 
     def __init__(self):
+
         self.uName = ""
         self.uid = -1
         self.cart = {}
@@ -39,10 +41,16 @@ class User(UserMixin):
         self.cart = {}
 
     def get_id(self) -> str:
+
         self.uid = get_user_id(self.uName)
         return str(self.uid)
 
     def get(uid: str):
+        """
+        @param uid: the unique UserId fpr this user
+        @see MySQL user.id
+        @return:
+        """
         filteredList = list(filter(lambda user: user.get_id() == uid, User.userList))
         if len(filteredList) > 1:
             pass
