@@ -8,9 +8,9 @@ apt-get install python3 -y
 apt-get install python3-pip -y
 
 # Now you can use pip to install Flask and any other dependencies for your website
-pip3 install flask -y
+pip3 install flask
 
-pip3 install -r "requirements.txt" -y
+pip3 install -r "requirements.txt"
 
 
 set -e&
