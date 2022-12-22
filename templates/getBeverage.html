@@ -18,14 +18,14 @@
   <div class="container">
 
     <h1>Getränke</h1>
-      
+
 
  {% for i in range(0, beverages|length, 3) %}
   <div class="item-grid">
     <div class="item">
       <a href="/api/addToCart/{{beverages[i].id}}">
       <img alt="Qries" src="{{beverages[i].Img_URL}}" ></a>
-      <p>{{beverages[i].1}}</p>
+      <p>{{beverages[i].Name}}</p>
     </div>
     {% if beverages[i+1] %}
 
@@ -40,7 +40,7 @@
     <div class="item">
       <a href="/api/addToCart/{{beverages[i + 2].id}}">
       <img alt="Qries" src="{{beverages[i+2].Img_URL}}"></a>
-      <p>{{beverages[i+2].1}}</p>
+      <p>{{beverages[i+2].Name}}</p>
     </div>
     {% endif %}
   </div>

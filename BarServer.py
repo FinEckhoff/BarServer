@@ -11,7 +11,7 @@ from flask import Flask, jsonify, request, redirect, make_response, render_templ
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user
 import math
 from wtforms import StringField, PasswordField, SubmitField
-from api import app, login_manager, orderQueue, cnx, cursor, LoginForm, beverages
+from api import app, login_manager, orderQueue, cnx, cursor, LoginForm, beverages, replaceTheFuckingQuotes
 from classes import User, Order
 
 
@@ -122,10 +122,18 @@ def get_orders():
         userID = flask_login.current_user.uid
     sortedOrders = sorted(ret, key=lambda x: x.barID, reverse=True)
     sortedOrders = condenseOrders(sortedOrders)
-    jsonString = str(list((map(lambda x: str(x), sortedOrders))))
-    print(jsonString)
-    jsonOrders = json.loads(jsonString)
-    return render_template("getOrders.html", orders=jsonOrders, userID=userID, beverages = beverages)
+    #jsonString = str(list((map(lambda x: json.loads(str(x)), sortedOrders))))
+    json_data = []
+    for result in sortedOrders:
+
+        stringResult = replaceTheFuckingQuotes(str(result))
+
+        json_data.append(json.loads(str(stringResult)))
+
+    json_Orders = json.loads(json.dumps(json_data))
+
+
+    return render_template("getOrders.html", orders=json_Orders, userID=userID, beverages = beverages)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -146,7 +154,7 @@ def login():
         login_user(user)
 
         user.uid = user.get_id()
-        print(user.uid)
+
 
         flask.flash('Logged in successfully.')
 

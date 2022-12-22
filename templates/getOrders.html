@@ -10,32 +10,64 @@
 
 {% block LeftSubDiv %}
 
-{{orders[i]}}
-
 
  <div class="OrderList">
-  <div class="Order-container">
 
-    <h1>Bestellungen</h1>
+  <div class="Order-container" style="width: 100%">
+      <h1>Bestellungen</h1>
+
+
 
  {% for i in range(0, orders|length) %}
       {% set currentBar = orders[i].barID %}
-      {{currentBar}}
-  <div class="item-grid">
-    <div class="item">
-{{orders[i]}}
-      <img alt="Qries" src="{{beverages[i].Img_URL}}" >
-      <p>{{orders[i].1}}</p>
+      {% set currentBar = orders[i].barID %}
+
+<div class="order-item-grid" >
+
+<div class="item-column" style="width: 70%; height:100%" >
+
+
+    <div class="order-item">
+       {% set tempDrink = orders[i].drinkID | int%}
+      <img alt="Qries" src="{{beverages[tempDrink - 1].Img_URL}}"/>
     </div>
 
 
+</div>
 
-  </div>
+    <div class="item-column" style="width: 10%;" >
+
+
+            <div class="outer">
+            <div class="inner">{{orders[i].menge}}</div>
+            </div>
+
+          </div>
+
+          <div class="item-column" style="width: 20%; height:100%;" >
+        <div class="outer">
+            <div class="inner">
+                <a href="/api/confirmOrder.html?barID={{orders[i].barID}}&drinkID={{orders[i].drinkID}}&menge={{orders[i].menge}}">
+          <img src="https://cdn.pixabay.com/photo/2016/03/31/14/37/check-mark-1292787__340.png" alt="haken"></a>
+                 </div>
+
+          </div>
+      </div>
+
+
+
+</div>
+
 
 {% endfor %}
 
 </div>
-</div>
+
+
+
+
+     </div>
+
 {% endblock %}
 
 

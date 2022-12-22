@@ -1,5 +1,6 @@
 import hashlib
 
+import flask
 import flask_login
 
 from flask import Flask, jsonify, request, redirect, make_response, render_template, send_from_directory
@@ -41,11 +42,16 @@ def getBeveragesFromServer():
     row_headers = [x[0] for x in cursor.description]
     results = cursor.fetchall()
 
-    json_data=[]
+    json_data = []
     for result in results:
         json_data.append(dict(zip(row_headers, result)))
 
-    beverages = json_data
+    beverages = json.loads(json.dumps(json_data))
+
+
+def replaceTheFuckingQuotes(
+        string: str) -> str:  # FUCK THIS JSON!!! see: https://stackoverflow.com/questions/39491420/python-jsonexpecting-property-name-enclosed-in-double-quotes
+    return string.replace("'", '"')
 
 
 getBeveragesFromServer()
@@ -77,13 +83,11 @@ def submitOrder():
 
     entry = json.loads(flask_login.current_user.get_cart())
     for key in entry.keys():
-        print(key)
-
         drinkID = key
         menge = entry[key]
         _order = Order(drinkID, barID, menge)
         orderQueue.append(_order)
-        print(_order)
+
     # flask.flash('Send')
     flask_login.current_user.cart = {}
     return render_template('confirm.html', target='/getBeverages')
@@ -95,6 +99,24 @@ def removeFromToCart(id):
     flask_login.current_user.removeItemFromCart(id)
 
     return redirect("/getBeverages")
+
+
+@app.route('/api/confirmOrder.html')
+def confirmOrder():
+    barID = int(request.args.get('barID'))
+    drinkID = int(request.args.get('drinkID'))
+    menge = int(request.args.get('menge'))
+
+    tempOrder = Order(drinkID, barID, menge)
+    if tempOrder not in orderQueue:
+        print(f"types {type(tempOrder)}{type(orderQueue[0])}")
+        print(f"error {str(tempOrder)}")
+        for order in orderQueue:
+            print(f"QUEUE {str(order)}")
+
+    orderQueue.remove(tempOrder)
+
+    return redirect("/getOrders")
 
 
 # cartKeys = flask_login.current_user.cart.keys(), cartValues= flask_login.current_user.cart.values()
@@ -125,10 +147,7 @@ def get_order():
                 """
 
         ret = list(map(lambda order: str(order), filtered))
-        print(ret)
 
-        print(list(filtered))
-        print(json.dumps(ret))
     return jsonify(ret)
 
 
@@ -142,7 +161,7 @@ def validate_user(username, password):
         query = f"SELECT id from user where name = '{username.data}' and pass = '{hash.hexdigest()}'"
         cursor.execute(query)
         results = cursor.fetchall()
-        print(hash.hexdigest())
+
         return len(results) == 1
 
     except Exception as e:
@@ -156,7 +175,6 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Submit')
 
     def validate_on_submit(self):
-        print("here")
         if validate_user(self.username, self.password):
             return True
         return False
