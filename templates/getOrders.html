@@ -24,12 +24,16 @@
 
  {% for i in range(0, orders|length) %}
       {% set currentBar = orders[i].barID | int %}
-      order {{orders[i]}}
-      last: {{vars.lastBar | int}}
 
-      current {{currentBar | int}}
+
       {% if vars.lastBar | int != currentBar | int %}
-        BAR
+      <br>
+      <br>
+      <br>
+      <h1>BarNr {{currentBar}}</h1>
+
+
+
       {%endif%}
       {% set currentBar = orders[i].barID | int %}
 

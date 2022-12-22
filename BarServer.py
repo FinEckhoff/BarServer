@@ -102,6 +102,7 @@ def condenseOrders(sortedOrders: list):  # HOLY SHIT das MUSS doch besser gehen!
 
 
 @app.route('/getOrders')
+@login_required
 def get_orders():
     barID = int(request.args.get('barID', "-1"))
     ret = []

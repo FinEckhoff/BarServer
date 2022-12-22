@@ -76,6 +76,40 @@ def addToCart(id):
     return redirect("/getBeverages")
 
 
+def updateVerbrauchOnServer(_order):
+    barID = _order.barID
+    drinkID = _order.drinkID
+    menge = _order.menge
+
+    #query = f"INSERT INTO bar_verbrauch (barID, drinkID, menge) VALUES ({barID},{drinkID},{menge}) ON DUPLICATE KEY UPDATE menge = VALUES(menge + {menge})"
+    queryGet = f"SELECT * from bar_verbrauch WHERE barID = {barID} AND drinkID = {drinkID}"
+
+
+    cursor.execute(queryGet)
+
+    row_headers = [x[0] for x in cursor.description]
+    results = cursor.fetchall()
+    if len(results) == 0:
+        queryPut = f"INSERT INTO bar_verbrauch (barID, drinkID, Stand) VALUES ({barID},{drinkID},{-menge})"
+        print(queryPut)
+        cursor.execute(queryPut)
+        results = cursor.fetchall()
+        print(results)
+
+    else:
+        json_data = []
+        for result in results:
+            json_data.append(dict(zip(row_headers, result)))
+        entry = json.loads(json.dumps(json_data))[0]
+        _order.menge = int(entry["Stand"]) - _order.menge
+        queryPut = f"UPDATE bar_verbrauch SET Stand = {_order.menge} WHERE drinkID = {drinkID} AND barID = {menge}"
+        cursor.execute(queryPut)
+        results = cursor.fetchall()
+        print(results)
+    cnx.commit()
+
+
+
 @app.route('/api/submitOrder')
 @login_required
 def submitOrder():
@@ -86,7 +120,7 @@ def submitOrder():
         drinkID = key
         menge = entry[key]
         _order = Order(drinkID, barID, menge)
-
+        updateVerbrauchOnServer(_order)
         orderQueue.append(_order)
 
     # flask.flash('Send')
