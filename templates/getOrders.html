@@ -7,8 +7,6 @@
 </head>
 <body>
 
-{% block homeURL %}{{home}}
-{% endblock %}
 
 
 {% extends "header.html" %}
@@ -21,11 +19,19 @@
   <div class="Order-container" style="width: 100%">
       <h1>Bestellungen</h1>
 
-
+    {% set lastBar = -1 | int %}
 
  {% for i in range(0, orders|length) %}
-      {% set currentBar = orders[i].barID %}
-      {% set currentBar = orders[i].barID %}
+      {% set currentBar = orders[i].barID | int %}
+      order {{orders[i]}}
+      last: {{lastBar | int}}
+      <br>
+      current {{currentBar | int}}
+      {% if lastBar | int != currentBar | int %}
+        BAR
+      {%endif%}
+      {% set lastBar = currentBar | int %}
+
 
 <div class="order-item-grid" >
 

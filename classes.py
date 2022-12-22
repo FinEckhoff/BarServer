@@ -57,23 +57,22 @@ class User(UserMixin):
     def get_cart(self):
         return json.dumps(self.cart)
 
-    def addItemToCart(self, id):
-        if id in self.cart.keys():
-            self.cart[id] = self.cart[id] + 1
+    def addItemToCart(self, itemId):
+        if itemId in self.cart.keys():
+            self.cart[itemId] = self.cart[itemId] + 1
         else:
-            self.cart[id] = 1
+            self.cart[itemId] = 1
 
-    def removeItemFromCart(self, id):
-        if id not in self.cart.keys():
+    def removeItemFromCart(self, itemId):
+        if itemId not in self.cart.keys():
             return  # TODO confused
-        self.cart[id] = self.cart[id] - 1
-        if self.cart[id] == 0:
-            self.cart.pop(id, None)
+        self.cart[itemId] = self.cart[itemId] - 1
+        if self.cart[itemId] == 0:
+            self.cart.pop(itemId, None)
 
     def sync(self):
         query = f"SELECT *  from user where name = '{self.uName}'"
         cursor.execute(query)
-
 
         row_headers = [x[0] for x in cursor.description]
         results = cursor.fetchall()
@@ -86,7 +85,7 @@ class User(UserMixin):
 
         userInfo = json.loads(json.dumps(json_data))[0]
         self.gruppe = userInfo["gruppe"]
-        self.id = userInfo["id"]
+        self.uid = userInfo["id"]
         HomeConfig = config["HOME"]
         self.home = HomeConfig[str(self.gruppe)]
 
@@ -105,15 +104,15 @@ class Order:
 
     def __eq__(self, other):  # ich habe auf meinen PC gekotzt als ich das geschreiben habe
         if not isinstance(other, Order):
-            print("fail instance")
+
             return False
         if not int(self.barID) == int(other.barID):
-            print("fail bar")
+
             return False
         if not int(self.drinkID) == int(other.drinkID):
-            print("fail drink")
+
             return False
-        print("True")
+
         return True
 
     def __ne__(self, other):

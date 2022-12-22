@@ -86,9 +86,11 @@ def submitOrder():
         drinkID = key
         menge = entry[key]
         _order = Order(drinkID, barID, menge)
+
         orderQueue.append(_order)
 
     # flask.flash('Send')
+
     flask_login.current_user.cart = {}
     return render_template('confirm.html', target='/getBeverages')
 

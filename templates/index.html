@@ -14,7 +14,10 @@
 
 </head>
 <body>
-HALLO {{user.name}}
+{% extends "header.html" %}
+ <!--{{block.super()}}-->
+{% block homeURL %}{{home}}
+{% endblock %}
 <main>
     <!-- PAGE Content -->
 </main>

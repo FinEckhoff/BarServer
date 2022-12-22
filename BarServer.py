@@ -34,6 +34,7 @@ def settings():
 
 @app.route('/')
 @app.route('/index')
+@login_required
 def index():
     user_info = {}
     if flask_login.current_user.is_anonymous:
@@ -45,7 +46,7 @@ def index():
             'name': flask_login.current_user.uName
         }
 
-    return render_template('index.html', user=user_info)
+    return render_template('index.html', user=user_info, home=flask_login.current_user.home)
 
 
 @app.route('/getBeverages')
@@ -143,11 +144,12 @@ def login():
         user: User = User()
         user.setup()
         user.uName = form.username.data
-
+        user.sync()
         User.userList.append(user)  # What is a memory leak???? #TODO fix
+
         login_user(user)
 
-        user.sync()
+
 
         flask.flash('Logged in successfully.')
 
