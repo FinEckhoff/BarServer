@@ -137,20 +137,33 @@ def removeFromToCart(id):
     return redirect("/getBeverages")
 
 
+def removeOrderItemsfromServer(_order):
+    tempDrinkID = _order.drinkID
+    tempBarID = _order.barID
+
+    query = f'DELETE from bar_verbrauch WHERE barID = {tempBarID} AND drinkID = {tempDrinkID}'
+    cursor.execute(query)
+    cnx.commit()
+    #ignore
+
+
 @app.route('/api/confirmOrder.html')
 def confirmOrder():
     barID = int(request.args.get('barID'))
     drinkID = int(request.args.get('drinkID'))
-    menge = int(request.args.get('menge'))
+    menge = 0
+    try:
+        menge = int(request.args.get('menge',0))
+    except ValueError as valerr:
+        print(f"Jo {valerr}")
+
 
     tempOrder = Order(drinkID, barID, menge)
-    if tempOrder not in orderQueue:
-        print(f"types {type(tempOrder)}{type(orderQueue[0])}")
-        print(f"error {str(tempOrder)}")
-        for order in orderQueue:
-            print(f"QUEUE {str(order)}")
-
-    orderQueue.remove(tempOrder)
+    try:
+        orderQueue.remove(tempOrder)
+    except:
+        pass #irrelevant geworden da serverseitig orderQUEUE
+    removeOrderItemsfromServer(tempOrder)
 
     return redirect("/getOrders")
 

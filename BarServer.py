@@ -101,12 +101,27 @@ def condenseOrders(sortedOrders: list):  # HOLY SHIT das MUSS doch besser gehen!
 """
 
 
+def getSachStandFromSeServer() -> str:
+    query = 'SELECT barID, drinkID, Stand from bar_verbrauch'
+    cursor.execute(query)
+    row_headers = [x[0] for x in cursor.description]
+    results = cursor.fetchall()
+
+    json_data = []
+    for result in results:
+        json_data.append(dict(zip(row_headers, result)))
+
+    jsonString = json.loads(json.dumps(json_data))
+    return jsonString
+
+
 @app.route('/getOrders')
 @login_required
 def get_orders():
     barID = int(request.args.get('barID', "-1"))
     ret = []
     if barID == -1:
+        ret = []
         ret = orderQueue
         # ret = list(map(lambda order: (order, orderQueue))
     else:
@@ -117,8 +132,14 @@ def get_orders():
     userID = -1
     if not flask_login.current_user.is_anonymous:
         userID = flask_login.current_user.uid
+    sortedOrders = []
     sortedOrders = sorted(ret, key=lambda x: x.barID, reverse=True)
-    sortedOrders = condenseOrders(sortedOrders)
+    sortedOrders = condenseOrders(sortedOrders) # ignore the shit before this line
+
+    #____________________________________________________________________________________________
+    sortedOrders = getSachStandFromSeServer()
+
+
     # jsonString = str(list((map(lambda x: json.loads(str(x)), sortedOrders))))
     json_data = []
     for result in sortedOrders:
