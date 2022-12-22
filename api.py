@@ -9,6 +9,7 @@ from wtforms import StringField, PasswordField, SubmitField
 
 from classes import *
 
+beverages = json.loads("{}")
 app = Flask(__name__, template_folder="./templates")
 
 app.config.update(
@@ -32,6 +33,24 @@ cnx = mysql.connector.connect(user=MySQLConfig["user"], password=MySQLConfig["pa
 cursor = cnx.cursor()
 orderQueue = []
 
+
+def getBeveragesFromServer():
+    global beverages
+    query = 'SELECT id,Name,Img_URL from beverages'
+    cursor.execute(query)
+    row_headers = [x[0] for x in cursor.description]
+    results = cursor.fetchall()
+
+    json_data=[]
+    for result in results:
+        json_data.append(dict(zip(row_headers, result)))
+
+    beverages = json_data
+
+
+getBeveragesFromServer()
+
+
 @app.route('/test.css')
 @app.route('/api/test.css')
 def standart_stylesheet():
@@ -43,16 +62,17 @@ def standart_stylesheet():
 def cart_script():
     return send_from_directory("templates", "cart.js")
 
+
 @app.route('/api/addToCart/<id>')
 @login_required
 def addToCart(id):
     flask_login.current_user.addItemToCart(id)
     return redirect("/getBeverages")
 
+
 @app.route('/api/submitOrder')
 @login_required
 def submitOrder():
-
     barID = flask_login.current_user.uid
 
     entry = json.loads(flask_login.current_user.get_cart())
@@ -64,10 +84,9 @@ def submitOrder():
         _order = Order(drinkID, barID, menge)
         orderQueue.append(_order)
         print(_order)
-    #flask.flash('Send')
+    # flask.flash('Send')
     flask_login.current_user.cart = {}
     return render_template('confirm.html', target='/getBeverages')
-
 
 
 @app.route('/api/removeFromCart/<id>')
@@ -77,17 +96,17 @@ def removeFromToCart(id):
 
     return redirect("/getBeverages")
 
-#cartKeys = flask_login.current_user.cart.keys(), cartValues= flask_login.current_user.cart.values()
 
-@app.route('/api/orderNew') #deprecated
+# cartKeys = flask_login.current_user.cart.keys(), cartValues= flask_login.current_user.cart.values()
+
+@app.route('/api/orderNew')  # deprecated
 @login_required
 def set_order():
     pass
 
 
-@app.route('/api/getOrderQueue') #DEBUG / APP?
+@app.route('/api/getOrderQueue')  # DEBUG / APP?
 def get_order():
-
     barID = int(request.args.get('barID', "-1"))
     ret = []
     if barID == -1:
@@ -141,4 +160,3 @@ class LoginForm(FlaskForm):
         if validate_user(self.username, self.password):
             return True
         return False
-

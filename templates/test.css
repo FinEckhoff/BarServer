@@ -4,11 +4,24 @@
   text-align: center;
 	alignment: left;
 }
+
+.order-container{
+	  width: 70%;
+  margin: 0 auto;
+  text-align: center;
+	alignment: left;
+}
 .h1 {
 	text-align: center;
 }
 .item-grid {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+	alignment: left;
+}
+.order-item-grid{
+	display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
 	alignment: left;
@@ -23,7 +36,15 @@
 	border-style: dashed;
 	alignment: left;
 }
-
+.order-item{
+	 width: 32%;
+  margin: 1em 0;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+	border-style: dashed;
+	alignment: left;
+}
 .item img {
   border-radius: 5px 5px 0 0;
 	width:90%;
@@ -44,6 +65,10 @@
 }
 .beverageList{
 width: 80%;
+  float: left;
+}
+.OrderList{
+	width: 70%;
   float: left;
 }
 .shoppingCart{

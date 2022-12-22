@@ -11,7 +11,7 @@ from flask import Flask, jsonify, request, redirect, make_response, render_templ
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user
 import math
 from wtforms import StringField, PasswordField, SubmitField
-from api import app, login_manager, orderQueue, cnx, cursor, LoginForm
+from api import app, login_manager, orderQueue, cnx, cursor, LoginForm, beverages
 from classes import User, Order
 
 
@@ -48,22 +48,17 @@ def index():
     return render_template('index.html', user=user_info)
 
 
+
+
 @app.route('/getBeverages')
 @login_required
 def get_beverages():
-    query = 'SELECT id,Name,Img_URL from beverages'
-    cursor.execute(query)
-    results = cursor.fetchall()
-    ret = []
-    for result in results:
-        ret.append(result)
-
     id = -1
 
     if not flask_login.current_user.is_anonymous:
         id = flask_login.current_user.uid
 
-    return render_template("getBeverage.html", beverages=ret, userID=id, cart=flask_login.current_user.cart)
+    return render_template("getBeverage.html", beverages=beverages, userID=id, cart=flask_login.current_user.cart)
 
 
 def condenseOrders(sortedOrders: list):  # HOLY SHIT das MUSS doch besser gehen!!
@@ -127,7 +122,10 @@ def get_orders():
         userID = flask_login.current_user.uid
     sortedOrders = sorted(ret, key=lambda x: x.barID, reverse=True)
     sortedOrders = condenseOrders(sortedOrders)
-    return render_template("getOrders.html", orders=sortedOrders, userID=userID)
+    jsonString = str(list((map(lambda x: str(x), sortedOrders))))
+    print(jsonString)
+    jsonOrders = json.loads(jsonString)
+    return render_template("getOrders.html", orders=jsonOrders, userID=userID, beverages = beverages)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -172,6 +170,7 @@ def logout():
 
 
 if __name__ == '__main__':
+
     app.run(host="0.0.0.0", debug=True, port=6969)
     cursor.close()
     cnx.close()

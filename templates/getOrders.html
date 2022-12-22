@@ -13,17 +13,18 @@
 {{orders[i]}}
 
 
- <div class="beverageList">
-  <div class="container">
+ <div class="OrderList">
+  <div class="Order-container">
 
     <h1>Bestellungen</h1>
 
  {% for i in range(0, orders|length) %}
-      {{orders[i]}}
+      {% set currentBar = orders[i].barID %}
+      {{currentBar}}
   <div class="item-grid">
     <div class="item">
-
-      <img alt="Qries" src="{{orders[i].2}}" >
+{{orders[i]}}
+      <img alt="Qries" src="{{beverages[i].Img_URL}}" >
       <p>{{orders[i].1}}</p>
     </div>
 

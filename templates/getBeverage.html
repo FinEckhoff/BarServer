@@ -18,27 +18,28 @@
   <div class="container">
 
     <h1>Getränke</h1>
+      
 
  {% for i in range(0, beverages|length, 3) %}
   <div class="item-grid">
     <div class="item">
-      <a href="/api/addToCart/{{beverages[i].0}}">
-      <img alt="Qries" src="{{beverages[i].2}}" ></a>
+      <a href="/api/addToCart/{{beverages[i].id}}">
+      <img alt="Qries" src="{{beverages[i].Img_URL}}" ></a>
       <p>{{beverages[i].1}}</p>
     </div>
     {% if beverages[i+1] %}
 
     <div class="item">
-      <a href="/api/addToCart/{{beverages[i + 1].0}}">
-      <img alt="Qries" src="{{beverages[i+1].2}}"></a>
-      <p>{{beverages[i+1].1}}</p>
+      <a href="/api/addToCart/{{beverages[i + 1].id}}">
+      <img alt="Qries" src="{{beverages[i+1].Img_URL}}"></a>
+      <p>{{beverages[i+1].Name}}</p>
     </div>
     {% endif %}
     {% if beverages[i+2] %}
 
     <div class="item">
-      <a href="/api/addToCart/{{beverages[i + 2].0}}">
-      <img alt="Qries" src="{{beverages[i+2].2}}"></a>
+      <a href="/api/addToCart/{{beverages[i + 2].id}}">
+      <img alt="Qries" src="{{beverages[i+2].Img_URL}}"></a>
       <p>{{beverages[i+2].1}}</p>
     </div>
     {% endif %}
@@ -60,7 +61,7 @@
      <div class="item">
          <a href="/api/removeFromCart/{{key}}">
 
-      <img alt="Qries" src="{{beverages[id - 1].2}}" ></a>
+      <img alt="Qries" src="{{beverages[id - 1].Img_URL}}" ></a>
          <h2>
              {{cart[key]}}
          </h2>
