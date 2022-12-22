@@ -1,18 +1,13 @@
-import hashlib
 import json
-import re
+import json
+
 import flask
 import flask_login
-import mysql.connector
-from flask_wtf import FlaskForm
-from mysql.connector import errorcode
-import configparser
-from flask import Flask, jsonify, request, redirect, make_response, render_template, send_from_directory
-from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user
-import math
-from wtforms import StringField, PasswordField, SubmitField
+from flask import request, redirect, render_template
+from flask_login import login_required, login_user, logout_user
+
 from api import app, login_manager, orderQueue, cnx, cursor, LoginForm, beverages, replaceTheFuckingQuotes
-from classes import User, Order
+from classes import User
 
 
 @login_manager.user_loader
