@@ -48,8 +48,6 @@ def index():
     return render_template('index.html', user=user_info)
 
 
-
-
 @app.route('/getBeverages')
 @login_required
 def get_beverages():
@@ -57,20 +55,20 @@ def get_beverages():
 
     if not flask_login.current_user.is_anonymous:
         id = flask_login.current_user.uid
-
-    return render_template("getBeverage.html", beverages=beverages, userID=id, cart=flask_login.current_user.cart)
+    print(f"home is{flask_login.current_user.home}")
+    return render_template("getBeverage.html", beverages=beverages, userID=id, cart=flask_login.current_user.cart,
+                           home=flask_login.current_user.home)
 
 
 def condenseOrders(sortedOrders: list):  # HOLY SHIT das MUSS doch besser gehen!!
     condensed = []
     objectsAlreadyProcessed = []
     for index, order in enumerate(sortedOrders):
-        if order in objectsAlreadyProcessed :
+        if order in objectsAlreadyProcessed:
             continue
         fixeddrinkID = order.drinkID
         fixedbarID = order.barID
         currentMenge = order.menge
-        
 
         for otherIndex, other in enumerate(sortedOrders):
             if order is other:
@@ -81,12 +79,10 @@ def condenseOrders(sortedOrders: list):  # HOLY SHIT das MUSS doch besser gehen!
         condensed.append(order)
         objectsAlreadyProcessed.append(order)
     return condensed
-                
-
-
-
 
     return None
+
+
 """
     def findIndexOforder(order):
         index = next((i for i, item in enumerate(bestellungenProBar) if item.barID == order.barID), -1)
@@ -102,7 +98,6 @@ def condenseOrders(sortedOrders: list):  # HOLY SHIT das MUSS doch besser gehen!
         else:
             bestellungenProBar.append(order)
 """
-
 
 
 @app.route('/getOrders')
@@ -122,18 +117,17 @@ def get_orders():
         userID = flask_login.current_user.uid
     sortedOrders = sorted(ret, key=lambda x: x.barID, reverse=True)
     sortedOrders = condenseOrders(sortedOrders)
-    #jsonString = str(list((map(lambda x: json.loads(str(x)), sortedOrders))))
+    # jsonString = str(list((map(lambda x: json.loads(str(x)), sortedOrders))))
     json_data = []
     for result in sortedOrders:
-
         stringResult = replaceTheFuckingQuotes(str(result))
 
         json_data.append(json.loads(str(stringResult)))
 
     json_Orders = json.loads(json.dumps(json_data))
 
-
-    return render_template("getOrders.html", orders=json_Orders, userID=userID, beverages = beverages)
+    return render_template("getOrders.html", orders=json_Orders, userID=userID, beverages=beverages,
+                           home=flask_login.current_user.home)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -153,8 +147,7 @@ def login():
         User.userList.append(user)  # What is a memory leak???? #TODO fix
         login_user(user)
 
-        user.uid = user.get_id()
-
+        user.sync()
 
         flask.flash('Logged in successfully.')
 
@@ -178,7 +171,6 @@ def logout():
 
 
 if __name__ == '__main__':
-
     app.run(host="0.0.0.0", debug=True, port=6969)
     cursor.close()
     cnx.close()

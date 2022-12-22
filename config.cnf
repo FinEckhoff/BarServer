@@ -10,6 +10,9 @@ host = localhost
 2 = Bar
 3 = Security
 4 = LAD
-
-[RECHTE]
+[HOME]
+1=/getBeverages
+2=/getBeverages
+3=/getBeverages
+4=/getOrders
 
